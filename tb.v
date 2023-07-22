@@ -1,20 +1,24 @@
 module tb ();
-reg [127:0] in_mix;
-wire [127:0] out_mix;
+reg [127:0] plaintext;
+wire [127:0] cypertext;
+reg CLK, RST;
 
-    mixcolumn mix1(in_mix, out_mix);
+    AES_pipe AES(plaintext, CLK, RST, cypertext);
+
+
+    always #1 begin CLK = ~CLK; end //CLK generate
 
     initial begin
         $dumpfile("test.vcd");
         $dumpvars(0, tb);
-
-        in_mix = 128'h01010101010101010101010101010101;
-        #10
-        in_mix = 128'h01010101020202020101010101010101;
-        #10
-        in_mix = 128'h01010101010101010101010101010101;
-         
         
+        CLK = 1; RST = 1; 
+        #1 RST = 0;
+        #1 plaintext=128'h1;
+        #2 plaintext=128'h2;
+        #2 plaintext=128'h3;
+        #2 plaintext=128'h4;
+        #100 $finish;
     end
 
 endmodule

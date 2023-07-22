@@ -7,7 +7,7 @@ wire [127:0] multi2, multi3;
 
 //temporary variable
 wire [31:0]temp11, temp12, temp13, temp14, temp21, temp22, temp23, temp24, 
-temp31, temp32, temp33, temp34, temp41, temp42,temp43, temp44;
+temp31, temp32, temp33, temp34, temp41, temp42, temp43, temp44;
 
 //transpose matrix 
 assign in_matrix[127:96] = {in[127:120], in[95:88], in[63:56], in[31:24]};
@@ -16,7 +16,7 @@ assign in_matrix[63:32] = {in[111:104], in[79:72], in[47:40], in[15:8]};
 assign in_matrix[31:0] = {in[103:96], in[71:64], in[39:32], in[7:0]};
 
 // specific constant matrix
-parameter [7:0] const1 = 8'b10110101; //2311  
+parameter [7:0] const1 = 8'b10110101; //2311 
 parameter [7:0] const2 = 8'b01101101; //1231
 parameter [7:0] const3 = 8'b01011011; //1123
 parameter [7:0] const4 = 8'b11010110; //3112
@@ -175,12 +175,12 @@ output [7:0] out_MUX;
 reg [7:0] temp_mux;
 
 always @ (sel, in1, in2, in3) begin
-    case(sel) 
-        2'b00 : temp_mux = 7'bx;
-        2'b01 : temp_mux = in1;
-        2'b10 : temp_mux = in2;
-        2'b11 : temp_mux = in3;
-    endcase 
+  case(sel) 
+    2'b00 : temp_mux = 7'bx;
+    2'b01 : temp_mux = in1;
+    2'b10 : temp_mux = in2;
+    2'b11 : temp_mux = in3;
+  endcase 
 end
 assign out_MUX = temp_mux;
 endmodule
@@ -195,8 +195,13 @@ endmodule
 module GF_multi2 (in, out2);
 input [7:0]in;
 output [7:0]out2;
+wire [7:0] temp1, temp2;
+parameter [7:0] overflow = 8'b0001_1011;
+assign temp1 = in<<1;
+assign temp2 = (in<<1) ^ overflow;
 
-assign out2 = in<<1; //shift == multiply by 2
+MUX2input MUX_2in(temp1, temp2, in[7], out2);
+
 endmodule
 
 module GF_multi3 (in, out3);
@@ -209,3 +214,15 @@ GF_multi2 multi2 (in, temp);
 assign out3 = temp^in; //multi2 + self
 endmodule
 
+module MUX2input (in1, in2, sel, out);
+input [7:0] in1, in2;
+input sel;
+output reg [7:0]out;
+
+always @ (in1, in2, sel) begin
+    case(sel)
+        1'b0 : out = in1;
+        1'b1 : out = in2;
+    endcase
+end
+endmodule

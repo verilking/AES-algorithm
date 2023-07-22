@@ -1,6 +1,6 @@
-module AddRoundKey(in, master_key, out);
-input [127:0] in, master_key;
+module AddRoundKey(in1, in2, out);
+input [127:0] in1, in2;
 output [127:0] out;
 
-xor(out, in, master_key);
+assign out = in1 ^ in2;
 endmodule

@@ -31,7 +31,5 @@ always @ (in) begin
     out[2] = s_box[sel+5];
     out[1] = s_box[sel+6];
     out[0] = s_box[sel+7];
-
 end
-
 endmodule
